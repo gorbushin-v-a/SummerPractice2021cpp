@@ -10,57 +10,23 @@ const size_t NUMBER_OF_THREADS = 4;
 
 using namespace std;
 
-//string process_line(string in_line){
-//    string out_line=in_line;
-//
-//    for(size_t i=0; i<out_line.size(); i++){
-//        if (isdigit(out_line[i])){
-//            int d = out_line[i] -'0';
-//            if(d < 9){
-//                out_line[i] = '0' + d + 1;
-//            }else{
-//                out_line[i] = '0';
-//            }
-//        }else if (isupper(out_line[i])){
-//            out_line[i] = tolower(out_line[i]); tolower(out_line[i]);
-//        }else{
-//            out_line[i] = toupper(out_line[i]);
-//        }
-//    }
-//
-//    return out_line;
-//}
-
-string process_line(string line){
-    //string out_line=in_line;
-
+string process_line(string& line){
     for(size_t i=0; i<line.size(); i++){
-
+        char ch = line[i];
         if (isdigit(line[i])){
-            line[i] = '0' + (line[i] - '0' +1)%10;
-        }else if (isupper(line[i])){
-            line[i] = tolower(line[i]);
+            line[i] = '0' + (ch - '0' +1)%10;
+        }else if (isupper(ch)){
+            line[i] = tolower(ch);
         }else{
-            line[i] = toupper(line[i]);
+            line[i] = toupper(ch);
         }
-//        const bool a = isdigit(line[i]);
-//        switch(1)
-//        {
-//            case a:
-//                break;
-//            case isdigit(line[i]):
-//                break;
-//            default:
-//                break;
-//        }
     }
-
     return line;
 }
 
 void process_thread(vector<string>& lines, size_t begin, size_t end){
     for(size_t i=begin; i<end; i++){
-        lines[i] = process_line(lines[i]);
+        lines[i] = process_line(ref(lines[i]));
     }
 }
 
