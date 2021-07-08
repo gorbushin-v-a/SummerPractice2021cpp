@@ -2,8 +2,10 @@
 import random
 import string
 
+#LINE_LENGTH = 4096
+#LINE_COUNT = 128 * 1024
 LINE_LENGTH = 4096
-LINE_COUNT = 128 * 1024
+LINE_COUNT = 128 * 16
 choice = string.digits+string.ascii_letters
 
 

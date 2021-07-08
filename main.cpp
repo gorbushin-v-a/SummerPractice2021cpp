@@ -10,29 +10,56 @@ const size_t NUMBER_OF_THREADS = 4;
 
 using namespace std;
 
-string process_line(string in_line){
-    string out_line=in_line;
+//string process_line(string in_line){
+//    string out_line=in_line;
+//
+//    for(size_t i=0; i<out_line.size(); i++){
+//        if (isdigit(out_line[i])){
+//            int d = out_line[i] -'0';
+//            if(d < 9){
+//                out_line[i] = '0' + d + 1;
+//            }else{
+//                out_line[i] = '0';
+//            }
+//        }else if (isupper(out_line[i])){
+//            out_line[i] = tolower(out_line[i]); tolower(out_line[i]);
+//        }else{
+//            out_line[i] = toupper(out_line[i]);
+//        }
+//    }
+//
+//    return out_line;
+//}
 
-    for(size_t i=0; i<out_line.size(); i++){
-        if (isdigit(out_line[i])){
-            int d = out_line[i] -'0';
-            if(d < 9){
-                out_line[i] = '0' + d + 1;
-            }else{
-                out_line[i] = '0';
-            }
-        }else if (isupper(out_line[i])){
-            out_line[i] = tolower(out_line[i]); tolower(out_line[i]);
+string process_line(string line){
+    //string out_line=in_line;
+
+    for(size_t i=0; i<line.size(); i++){
+
+        if (isdigit(line[i])){
+            line[i] = '0' + (line[i] - '0' +1)%10;
+        }else if (isupper(line[i])){
+            line[i] = tolower(line[i]);
         }else{
-            out_line[i] = toupper(out_line[i]);
+            line[i] = toupper(line[i]);
         }
+//        const bool a = isdigit(line[i]);
+//        switch(1)
+//        {
+//            case a:
+//                break;
+//            case isdigit(line[i]):
+//                break;
+//            default:
+//                break;
+//        }
     }
 
-    return out_line;
+    return line;
 }
 
-void process_thread(vector<string>& lines, size_t offset, size_t number_of_threads){
-    for(size_t i=offset; i<lines.size(); i+=number_of_threads){
+void process_thread(vector<string>& lines, size_t begin, size_t end){
+    for(size_t i=begin; i<end; i++){
         lines[i] = process_line(lines[i]);
     }
 }
@@ -59,12 +86,13 @@ int main() {
         data_load = std::chrono::steady_clock::now();
 
         cout << "Start " << NUMBER_OF_THREADS << " threads" << endl;
+        int lines_size = lines.size();
+        int line_count = lines_size/NUMBER_OF_THREADS;
         vector<thread> thread_pool;
-        for(size_t i=0; i<NUMBER_OF_THREADS; i++){
-         //   thread *th = new thread(process_thread, i);
-          //  thread_pool.push_back(th);
-            thread_pool.emplace_back(process_thread, ref(lines), i ,NUMBER_OF_THREADS);
+        for(size_t i=0; i<NUMBER_OF_THREADS-1; i++){
+            thread_pool.emplace_back(process_thread, ref(lines), i*line_count , (i+1)*line_count-1);
         }
+        thread_pool.emplace_back(process_thread, ref(lines), (NUMBER_OF_THREADS-1)*line_count ,lines_size);
 
         cout<<"Wait for finish"<<endl;
         for(auto& th : thread_pool){
